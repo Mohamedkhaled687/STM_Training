@@ -8,8 +8,6 @@
 #ifndef MYFDISK_H
 #define MYFDISK_H
 
-#define _LARGEFILE64_SOURCE
-
 /***************** Include files ******************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,7 +49,7 @@ typedef struct {
     uint32_t num_partition_entries;
     uint32_t partition_entry_size;
     uint32_t crc32_partition_array;
-} GptHeader;
+} GptHeader; // Gpt header act as the table of contents for the entire disk it's main purpose to tell the os everything it needs to find and use the partitions
 
 typedef struct {
     uint8_t partition_type_guid[16];
@@ -69,6 +67,13 @@ typedef struct {
  * @param device The device to read the partition table from
  */
 void read_partition_table(char *device);
+
+/**
+ * @brief Get the human-readable name for a partition type
+ * @param type The partition type code
+ * @return String representation of the partition type
+ */
+char* get_partition_type_name(uint8_t type);
 
 
 /**
