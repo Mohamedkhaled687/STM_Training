@@ -26,15 +26,41 @@
 
 /***************** Structures ******************/
 
+
 typedef struct {
     uint8_t status;             /**< Status of the partition (e.g., active or inactive) */
     uint8_t first_CHS[3];       /**< First CHS address */
     uint8_t type;               /**< Type of the partition (e.g., FAT32, NTFS, etc.) */
     uint8_t last_CHS[3];        /**< Last CHS address */
     uint32_t lba;               /**< Logical Block Address */
-    uint8_t sector_count;       /**< Sector count */
+    uint32_t sector_count;      /**< Sector count */
 } PartitionEntry;   
 
+typedef struct {
+    uint64_t signature;
+    uint32_t revision;
+    uint32_t header_size;
+    uint32_t crc32_header;
+    uint32_t reserved;
+    uint64_t current_lba;
+    uint64_t backup_lba;
+    uint64_t first_usable_lba;
+    uint64_t last_usable_lba;
+    uint8_t disk_guid[16];
+    uint64_t partition_entries_lba;
+    uint32_t num_partition_entries;
+    uint32_t partition_entry_size;
+    uint32_t crc32_partition_array;
+} GptHeader;
+
+typedef struct {
+    uint8_t partition_type_guid[16];
+    uint8_t unique_partition_guid[16];
+    uint64_t starting_lba;
+    uint64_t ending_lba;
+    uint64_t attributes;
+    uint16_t partition_name[36]; // UTF-16LE
+} GptPartitionEntry;
 
 /***************** Functions Prototypes ******************/
 
@@ -50,11 +76,20 @@ void read_partition_table(char *device);
  * @param device The name of the device 
  * @param partition_number The partition number
  * @param partition_entry Pointer to the partition entry
- */
-void process_partition_table(char *device , uint8_t partition_number , PartitionEntry *partition_entry);
+ */     
+void process_partition_table(char *device , uint8_t partition_number , PartitionEntry *table_entry_ptr);
 
 
 /**
+ * @brief Read the MBR partition table from the device
+ * @param device The name of the device
+ * @param table_entry_ptr Pointer to the partition entry
+ */
+
+ void read_mbr_partition_table(char *device , PartitionEntry *table_entry_ptr);
+
+
+ /**
  * @brief Read the EBR from the device
  * @param device The name of the device
  * @param current_ebr_sector The sector address we need right now 
@@ -62,6 +97,12 @@ void process_partition_table(char *device , uint8_t partition_number , Partition
  * @param logical_num A counter to keep track of partition number 
  */
 
-void read_ebr(char *device , uint32_t current_ebr_sector , uint32_t extended_partition_start , int logical_num);
+void read_ebr_partition_table(char *device , uint32_t current_ebr_sector , uint32_t extended_partition_start , int logical_num);
+
+/**
+ * @brief Read the GPT header and partition entries from the device
+ * @param device The name of the device
+ */
+void read_gpt_partition_table(char *device);
 
 #endif // MYFDISK_H
