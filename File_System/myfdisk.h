@@ -8,6 +8,8 @@
 #ifndef MYFDISK_H
 #define MYFDISK_H
 
+#define _LARGEFILE64_SOURCE
+
 /***************** Include files ******************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +19,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 
 /***************** Definitions ******************/
 
@@ -32,8 +33,7 @@ typedef struct {
     uint8_t last_CHS[3];        /**< Last CHS address */
     uint32_t lba;               /**< Logical Block Address */
     uint8_t sector_count;       /**< Sector count */
-    
-} PartitionEntry;
+} PartitionEntry;   
 
 
 /***************** Functions Prototypes ******************/
@@ -44,6 +44,7 @@ typedef struct {
  */
 void read_partition_table(char *device);
 
+
 /**
  * @brief Process the partition table
  * @param device The name of the device 
@@ -52,14 +53,15 @@ void read_partition_table(char *device);
  */
 void process_partition_table(char *device , uint8_t partition_number , PartitionEntry *partition_entry);
 
+
 /**
  * @brief Read the EBR from the device
  * @param device The name of the device
- * @param lba The logical block address of the EBR
- * @param original_ebr_lba The original logical block address of the EBR
- * @param ebr_number The number of the EBR
+ * @param current_ebr_sector The sector address we need right now 
+ * @param extended_partition_start The starting address of the extended partition
+ * @param logical_num A counter to keep track of partition number 
  */
 
-void read_ebr(char *device , uint32_t lba , uint32_t original_ebr_lba , int ebr_number);
+void read_ebr(char *device , uint32_t current_ebr_sector , uint32_t extended_partition_start , int logical_num);
 
 #endif // MYFDISK_H
