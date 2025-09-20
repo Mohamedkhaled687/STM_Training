@@ -105,6 +105,14 @@ void process_partition_table(char *device , uint8_t partition_number , Partition
 void read_ebr_partition_table(char *device , uint32_t current_ebr_sector , uint32_t extended_partition_start , int logical_num);
 
 /**
+ * @brief Process GPT partition entry
+ * @param device The device name
+ * @param partition_number The partition number
+ * @param gpt_entry Pointer to the GPT partition entry
+ */
+ void process_gpt_partition(char *device, uint8_t partition_number, GptPartitionEntry *gpt_entry);
+
+/**
  * @brief Read the GPT header and partition entries from the device
  * @param device The name of the device
  */

@@ -160,13 +160,6 @@ void read_ebr_partition_table(char *device , uint32_t current_ebr_lba , uint32_t
 
 
 
-
-/**
- * @brief Process GPT partition entry
- * @param device The device name
- * @param partition_number The partition number
- * @param gpt_entry Pointer to the GPT partition entry
- */
 void process_gpt_partition(char *device, uint8_t partition_number, GptPartitionEntry *gpt_entry) {
     /**< Print the details of each GPT partition entry */ 
     printf("%-12s   %-10llu %-10llu %-10llu %6.2f %-5s %-15s\n",
@@ -178,6 +171,8 @@ void process_gpt_partition(char *device, uint8_t partition_number, GptPartitionE
            "M",                                                        /**< Partition ID */
            "GPT Partition");                                             /**< Partition type name */
 }
+
+
 
 void read_gpt_partition_table(char *device){
     char buffer[SECTOR_SIZE];
