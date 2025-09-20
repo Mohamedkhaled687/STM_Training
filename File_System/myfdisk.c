@@ -67,6 +67,7 @@ void read_partition_table(char *device){
     close(fd);
 }
 
+
 char* get_partition_type_name(uint8_t type) {
     switch(type) {
         case 0x00: return "Empty";
@@ -88,13 +89,28 @@ char* get_partition_type_name(uint8_t type) {
 }
 
 
+void process_partition_table(char *device, uint8_t partition_number, PartitionEntry *table_entry_ptr) {
+    /**< Print the details of each partition entry */ 
+    printf("%-8s%-4d  %-4c %-10u %-10u %-10u %6.2f %5X %10s\n",
+           device,                                                       /**< Device name */ 
+           partition_number + 1,                                         /**< Partition number */ 
+           table_entry_ptr->status == 0x80 ? '*' : ' ',                  /**< Boot flag */ 
+           table_entry_ptr->lba,                                         /**< Start sector */ 
+           table_entry_ptr->lba + table_entry_ptr->sector_count - 1,     /**< End sector */ 
+           table_entry_ptr->sector_count,                             /**< Number of sectors */ 
+           (double)table_entry_ptr->sector_count * SECTOR_SIZE / (1024 * 1024 * 1024), /**< Size in GB */
+           table_entry_ptr->type,                                        /**< Partition ID */
+           get_partition_type_name(table_entry_ptr->type));              /**< Partition type name */
+}
+
+
 void read_mbr_partition_table(char *device , PartitionEntry *table_entry_ptr){
     /**< Print the header for the partition table information with bold text */ 
     printf("\033[1m%-10s %5s   %-10s %-10s %-10s %-10s %-5s %-5s\033[0m\n", "Device",
            "Boot", "Start", "End", "Sectors", "Size", "Id", "Type");
 
     
-        /**< Print the partition table information */
+    /**< Print the partition table information */
     for(int i = 0; i < 4; i++){
         if(table_entry_ptr[i].sector_count == 0 || table_entry_ptr[i].type == 0){
             continue;
@@ -245,18 +261,4 @@ void read_gpt_partition_table(char *device){
 
 
 
-
-void process_partition_table(char *device, uint8_t partition_number, PartitionEntry *table_entry_ptr) {
-    /**< Print the details of each partition entry */ 
-    printf("%-8s%-4d  %-4c %-10u %-10u %-10u %6.2f %5X %10s\n",
-           device,                                                       /**< Device name */ 
-           partition_number + 1,                                         /**< Partition number */ 
-           table_entry_ptr->status == 0x80 ? '*' : ' ',                  /**< Boot flag */ 
-           table_entry_ptr->lba,                                         /**< Start sector */ 
-           table_entry_ptr->lba + table_entry_ptr->sector_count - 1,     /**< End sector */ 
-           table_entry_ptr->sector_count,                             /**< Number of sectors */ 
-           (double)table_entry_ptr->sector_count * SECTOR_SIZE / (1024 * 1024 * 1024), /**< Size in GB */
-           table_entry_ptr->type,                                        /**< Partition ID */
-           get_partition_type_name(table_entry_ptr->type));              /**< Partition type name */
-}
 
