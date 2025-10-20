@@ -176,9 +176,12 @@ void read_ebr_partition_table(char *device , uint32_t current_ebr_lba , uint32_t
 
 
 
+
 void process_gpt_partition(char *device, uint8_t partition_number, GptPartitionEntry *gpt_entry) {
     /**< Print the details of each GPT partition entry */ 
-    printf("%-12s   %-10llu %-10llu %-10llu %6.2f %-5s %-15s\n",
+    char device_name[32];
+    sprintf(device_name, "%sp%d", device, partition_number + 1);
+    printf("%-12s  %-10llu %-10llu %-10llu %6.2f %-5s %-15s\n",
            device,                                                       /**< Device name */ 
            (unsigned long long)gpt_entry->starting_lba,                  /**< Start sector */ 
            (unsigned long long)gpt_entry->ending_lba,                   /**< End sector */ 
@@ -223,8 +226,8 @@ void read_gpt_partition_table(char *device){
     }
 
     /**< Print the header for the GPT partition table information with bold text */ 
-    printf("\033[1m%-12s   %-10s %-10s %-10s %-10s %-5s %-15s\033[0m\n", "Device",
-           "Start", "End", "Sectors", "Size", "Id", "Type");
+    printf("\033[1m%-12s %5s  %8s %-10s %-10s %-10s %-5s %-15s\033[0m\n", "Device",
+           "Boot", "Start", "End", "Sectors", "Size", "Id", "Type");
 
     // Calculate partition entries location and read them
     cur_offset = gpt_header->partition_entries_lba * SECTOR_SIZE;
