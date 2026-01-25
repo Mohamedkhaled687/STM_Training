@@ -24,14 +24,14 @@ typedef struct BlockHeader {
 
 
 
-
-
 // Function declarations
 void HmmInit(void);
 void *HmmAlloc(uint32_t needed_size); // we got the size in bytes 
 void HmmFree(void *ptr);
 void Coalescing_blocks(BlockHeader *head);
 void Heap_Shrinking(void);
+void HmmAlloc_test(void);
+void HmmFree_test(void);
 int ceiling(int a , int b);
 
 #endif // MAIN_H
